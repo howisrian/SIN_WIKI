@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabela E02 - Categorias de produtos - Wiki SIN ERP</title>
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+</head>
+<body>
+  <div class="header">
+    <h1>Wiki SIN ERP</h1>
+    <p>Documentação gerada com base no repositório atual para acelerar entrada de novos programadores.</p>
+  </div>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-title">Wiki SIN ERP</div>
+<div class="nav-group"><h3>Visão geral</h3>
+<a class="" href="../../index.html">Início</a>
+<a class="" href="../../pages/visao-geral/como-usar.html">Como usar a wiki</a>
+<a class="" href="../../pages/visao-geral/fluxo-real.html">Fluxo real do projeto</a>
+</div>
+<div class="nav-group"><h3>Estrutura</h3>
+<a class="" href="../../pages/estrutura/estrutura-repositorio.html">Estrutura do repositório</a>
+<a class="" href="../../pages/estrutura/backend-real.html">Backend real</a>
+<a class="" href="../../pages/estrutura/frontend-real.html">Frontend real</a>
+</div>
+<div class="nav-group"><h3>Módulos e rotinas</h3>
+<a class="" href="../../pages/modulos/modulos-existentes.html">Módulos existentes</a>
+<a class="" href="../../pages/modulos/como-criar-modulo.html">Como criar novo módulo</a>
+<a class="" href="../../pages/rotinas/como-criar-rotina.html">Como criar nova rotina</a>
+<a class="" href="../../pages/rotinas/fluxo-rotina.html">Fluxo de uma rotina</a>
+</div>
+<div class="nav-group"><h3>Tabelas</h3>
+<a class="" href="../../pages/tabelas/como-criar-tabela.html">Como criar nova tabela</a>
+<a class="" href="../../pages/tabelas/como-adicionar-campos.html">Como adicionar novos campos</a>
+<a class="" href="../../pages/tabelas/index-tabelas.html">Índice de tabelas do sistema</a>
+<a class="" href="../../pages/tabelas/usrsys.html">USRSYS - Usuários</a>
+<a class="" href="../../pages/tabelas/usr_groups.html">USR_GROUPS - Grupos</a>
+<a class="" href="../../pages/tabelas/e01.html">E01 - Produtos</a>
+<a class="active" href="../../pages/tabelas/e02.html">E02 - Categorias</a>
+<a class="" href="../../pages/tabelas/e05.html">E05 - Movimentos de estoque</a>
+<a class="" href="../../pages/tabelas/e06.html">E06 - TES</a>
+<a class="" href="../../pages/tabelas/f01.html">F01 - Contas financeiras</a>
+<a class="" href="../../pages/tabelas/f04.html">F04 - Transações</a>
+<a class="" href="../../pages/tabelas/c01.html">C01 - Clientes</a>
+</div>
+<div class="nav-group"><h3>Apoio</h3>
+<a class="" href="../../pages/problemas/problemas-solucoes.html">Problemas e soluções</a>
+</div></aside>
+    <main class="content">
+      
+<div class="card">
+  <h2>Tabela E02 - Categorias de produtos</h2>
+  <p>Cadastro auxiliar de categorias usado pelo produto E01.</p>
+</div>
+
+<div class="card">
+  <h2>Sumário</h2>
+  <ul>
+    <li>Campos</li>
+    <li>Relacionamentos</li>
+    <li>Onde é usada</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Campos</h2>
+  <table class="table">
+    <tr><th>Campo</th><th>Título</th><th>Descrição</th><th>Tipo</th></tr>
+    <tr><td>e02_id</td><td>ID</td><td>Identificador</td><td>int</td></tr>
+<tr><td>e02_cod</td><td>Código</td><td>Código da categoria</td><td>string(20)</td></tr>
+<tr><td>e02_desc</td><td>Descrição</td><td>Descrição da categoria</td><td>string(120)</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Relacionamentos</h2>
+  <table class="table">
+    <tr><th>Tabela origem</th><th>Tabela destino</th><th>Expressão origem</th><th>Expressão destino</th><th>Relacionamento</th></tr>
+    <tr><td>e02</td><td>e01</td><td>e02_id</td><td>e01_catid</td><td>1 para N</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Onde é usada</h2>
+  <p class="small">Use esta seção para acrescentar futuramente telas, rotinas, endpoints e regras que dependem diretamente desta tabela.</p>
+</div>
+
+      <div class="footer">Base usada: repositório SIN_ERP-main anexado na conversa.</div>
+    </main>
+  </div>
+</body>
+</html>
