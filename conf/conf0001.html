@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CONF0001 — Usuários (SIN ERP)</title>
+  <link rel="stylesheet" href="conf.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="conf.html">← Módulo CONF</a>
+    <h1><span class="tag conf1">conf0001</span> Usuários</h1>
+    <p class="lead">CRUD essencial de usuários da tabela <code>usrsys</code>: criar com senha hash, listar com grupos carregados, atualizar campos e senha.</p>
+    <p class="meta">Prefixo API: <code>/conf/users</code> · Código: <span class="path">API/app/modules/conf/routines/conf0001/</span> · App: chave de página <code>users</code></p>
+
+    <nav class="doc-toc" aria-label="Índice">
+      <ol>
+        <li><a href="#front">Frontend</a></li>
+        <li><a href="#api">API</a></li>
+        <li><a href="#db">Tabelas</a></li>
+        <li><a href="#rel">Ver também</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="front">Frontend</h2>
+    <p>Página mapeada em <span class="path">app/src/App.jsx</span> como <code>users: UsersPage</code>.</p>
+    <ul>
+      <li><strong>Arquivos esperados:</strong> <span class="path">app/src/pages/conf/conf0001/UsersPage.jsx</span> e componentes auxiliares (ex. <code>UserFormPanel.jsx</code>).</li>
+      <li><strong>Observação:</strong> em alguns clones do repositório os arquivos podem existir sob <span class="path">APP/src/pages/conf/conf0001/</span>; mantenha um único caminho canônico alinhado ao import do <code>App.jsx</code>.</li>
+      <li>Listagem e edição consomem <code>GET /conf/users/list</code> e <code>PUT /conf/users/{usr_id}</code>; criação usa <code>POST /conf/users/create</code>.</li>
+    </ul>
+
+    <h2 id="api">API (FastAPI)</h2>
+    <p>Todas as rotas abaixo exigem <strong>token válido</strong> (dependência global do roteador <code>/conf</code> em <span class="path">API/app/main.py</span>). Não há <code>require_permission</code> nesta rotina: qualquer usuário autenticado pode chamar estes endpoints (avalie endurecer com permissão <code>users</code> se necessário).</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Método</th>
+          <th>Endpoint</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>POST</td>
+          <td><code>/conf/users/create</code></td>
+          <td>Body: <code>UserCreate</code> — <code>usr_user</code>, <code>usr_pass</code> (plain → hash), <code>usr_level</code>, <code>usr_active</code>, opcionais nome/e-mail/telefone/datas. Erro 400 se login duplicado.</td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td><code>/conf/users/list</code></td>
+          <td>Lista usuários com relacionamento <code>groups</code> (pares usuário–grupo).</td>
+        </tr>
+        <tr>
+          <td>PUT</td>
+          <td><code>/conf/users/{usr_id}</code></td>
+          <td>Body: <code>UserUpdate</code> — campos opcionais; se <code>usr_pass</code> vier preenchido, substitui por hash.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Arquivos: <code>routes.py</code>, <code>services.py</code>, <code>schemas.py</code>.</p>
+
+    <h2 id="db">Tabelas</h2>
+    <p>Principal: <strong><code>usrsys</code></strong> (<code>User</code>). Vínculo com grupos: <code>usr_user_groups</code>. Detalhes em <a href="conf-dados.html">conf-dados.html</a>.</p>
+
+    <h2 id="rel">Ver também</h2>
+    <ul>
+      <li><a href="conf-dados.html">Tabelas e colunas</a></li>
+      <li><a href="conf0002.html">CONF0002 — Grupos e permissões</a></li>
+    </ul>
+  </div>
+</body>
+</html>

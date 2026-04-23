@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PDV0002 — Cadastro de caixas (SIN ERP)</title>
+  <link rel="stylesheet" href="pdv.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="pdv.html">← Módulo PDV</a>
+    <h1><span class="tag pdv2">pdv0002</span> Cadastro de caixas</h1>
+    <p class="lead">Manutenção de <strong>caixas</strong> (pontos de venda) e <strong>histórico de sessões</strong>.</p>
+    <p class="meta">Código: <code>app/src/pages/pdv/pdv0002/</code> · API: <code>API/.../routines/pdv0002/</code> · Prefixo: <code>/pdv/cash-register</code></p>
+
+    <nav class="doc-toc" aria-label="Índice">
+      <ol>
+        <li><a href="#front">Frontend</a></li>
+        <li><a href="#api">API</a></li>
+        <li><a href="#db">Tabelas e colunas</a></li>
+        <li><a href="#rel">Ver também</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="front">Frontend</h2>
+    <p><span class="path">app/src/pages/pdv/pdv0002/PDV0002Page.jsx</span> · <span class="path">app/src/pages/pdv/pdv0002/pdv0002.css</span></p>
+    <ul>
+      <li>CRUD de caixas; delete lógico (inativação).</li>
+      <li>Filtros de listagem (nome, status).</li>
+      <li>Histórico de sessões com filtros (caixa, status OPEN/CLOSED, datas).</li>
+      <li>Opção de manter caixa selecionado ao sair (integração com fluxo do PDV0001).</li>
+    </ul>
+
+    <h2 id="api">API</h2>
+    <p>Arquivo: <code>routines/pdv0002/routes.py</code></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Método</th>
+          <th>Endpoint</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>POST</td>
+          <td><code>/pdv/cash-register</code></td>
+          <td>Body: <code>P01Create</code> (<code>p01_name</code>, <code>p01_status</code>).</td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td><code>/pdv/cash-register?search=&amp;p01_status=</code></td>
+          <td>Lista caixas.</td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td><code>/pdv/cash-register/{p01_id}</code></td>
+          <td>Detalhe.</td>
+        </tr>
+        <tr>
+          <td>PUT</td>
+          <td><code>/pdv/cash-register/{p01_id}</code></td>
+          <td>Body: <code>P01Update</code>.</td>
+        </tr>
+        <tr>
+          <td>DELETE</td>
+          <td><code>/pdv/cash-register/{p01_id}</code></td>
+          <td>Inativa (<code>p01_status = false</code>).</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>O histórico de sessões consumido na tela utiliza o endpoint de <code>pdv0001</code>: <code>GET /pdv/cash-session/history</code> (ver <a href="pdv0001.html">PDV0001</a>).</p>
+
+    <h2 id="db">Tabelas e colunas (banco de dados)</h2>
+    <p>O CRUD de caixas atua diretamente sobre <strong><code>p01</code></strong> (<code>p01_id</code>, <code>p01_name</code> único, <code>p01_status</code> ativo/inativo, <code>p01_dtcreated</code>, mais <code>sys_id</code> interno). O histórico na mesma tela lista registros de <strong><code>p02</code></strong> (sessões) com join no nome do caixa.</p>
+    <p>Detalhamento coluna a coluna, formas de pagamento e tabelas <code>p03</code>…<code>p06</code>: <a href="pdv-dados.html">Modelos, tabelas e colunas</a> (seção <a href="pdv-dados.html#rotinas">Tabelas por rotina</a>).</p>
+
+    <h2 id="rel">Ver também</h2>
+    <ul>
+      <li><a href="pdv-dados.html">Modelos ORM e mapa do repositório</a></li>
+      <li><a href="pdv0001.html">PDV0001 — Operação do caixa</a></li>
+    </ul>
+  </div>
+</body>
+</html>

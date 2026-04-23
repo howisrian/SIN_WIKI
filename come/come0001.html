@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>COME0001 — Clientes (SIN ERP)</title>
+  <link rel="stylesheet" href="come.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="come.html">← Módulo COME</a>
+    <h1><span class="tag come1">come0001</span> Cadastro de clientes</h1>
+    <p class="lead">API REST para <code>c01</code>: listagem com busca, detalhe, inclusão e alteração.</p>
+    <p class="meta">Prefixo: <code>/come/come0001</code> · Front: <code>come0001</code> · <span class="path">app/src/pages/come/come0001/COME0001Page.jsx</span></p>
+
+    <nav class="doc-toc" aria-label="Índice">
+      <ol>
+        <li><a href="#api">API</a></li>
+        <li><a href="#rel">Ver também</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="api">API</h2>
+    <table>
+      <thead><tr><th>Método</th><th>Endpoint</th><th>Descrição</th></tr></thead>
+      <tbody>
+        <tr><td>GET</td><td><code>/come/come0001/clients</code></td><td><code>search</code>, <code>active</code>.</td></tr>
+        <tr><td>GET</td><td><code>/come/come0001/clients/next-code</code></td><td>Próximo <code>c01_cod</code>.</td></tr>
+        <tr><td>GET</td><td><code>/come/come0001/clients/{c01_id}</code></td><td>Detalhe.</td></tr>
+        <tr><td>POST</td><td><code>/come/come0001/clients</code></td><td>Cria (201).</td></tr>
+        <tr><td>PUT</td><td><code>/come/come0001/clients/{c01_id}</code></td><td>Atualiza parcial.</td></tr>
+      </tbody>
+    </table>
+    <p>Arquivos: <span class="path">API/app/modules/come/routines/come0001/</span></p>
+
+    <h2 id="rel">Ver também</h2>
+    <ul>
+      <li><a href="come-dados.html">Tabela c01</a></li>
+      <li><a href="../pdv/pdv-dados.html">PDV — cliente na venda</a></li>
+    </ul>
+  </div>
+</body>
+</html>

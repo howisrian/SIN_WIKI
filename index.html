@@ -1,80 +1,78 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Início - Wiki SIN ERP</title>
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Documentação — SIN ERP</title>
+  <link rel="stylesheet" href="pdv/pdv.css" />
+  <link rel="stylesheet" href="docs-shell.css" />
 </head>
 <body>
-  <div class="header">
-    <h1>Wiki SIN ERP</h1>
-    <p>Documentação gerada com base no repositório atual para acelerar entrada de novos programadores.</p>
+  <div class="docs-app">
+    <aside class="docs-sidebar" aria-label="Navegação da documentação">
+      <div class="docs-sidebar__brand">
+        <a href="./">SIN ERP — Docs</a>
+        <p class="docs-sidebar__subtitle">Módulos e rotinas</p>
+      </div>
+      <div class="docs-sidebar__search">
+        <label class="docs-sidebar__search-label" for="sidebar-search">Buscar</label>
+        <input
+          type="search"
+          id="sidebar-search"
+          class="docs-sidebar__search-input"
+          placeholder="Módulo, código ou nome…"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="Buscar módulos e rotinas na documentação"
+        />
+      </div>
+      <nav class="docs-sidebar__nav" id="sidebar-nav" aria-label="Módulos"></nav>
+    </aside>
+
+    <div class="docs-backdrop" id="docs-backdrop" aria-hidden="true"></div>
+
+    <div class="docs-main">
+      <header class="docs-toolbar" aria-label="Contexto">
+        <button type="button" class="docs-menu-btn" id="menu-btn" aria-label="Abrir ou fechar menu">
+          ☰
+        </button>
+        <h1 class="docs-toolbar__title" id="toolbar-title">Documentação SIN ERP</h1>
+        <span class="docs-toolbar__hint">Menu à esquerda · busca filtra módulos e rotinas</span>
+      </header>
+
+      <div class="docs-content">
+        <div class="view-home" id="view-home">
+          <div class="wrap">
+            <h1>Documentação do sistema</h1>
+            <p class="lead">
+              Central de documentação por <strong>módulo</strong>. Escolha um módulo na barra lateral para ver a apresentação e as <strong>rotinas</strong> disponíveis; ao selecionar uma rotina, o manual abre ao lado mantendo o menu fixo.
+            </p>
+            <p class="meta">
+              Novos módulos podem ser cadastrados em <span class="path">sindocs/docs-shell.js</span> (array <code>MODULES</code>).
+            </p>
+            <h2 class="hub-section-title">Módulos disponíveis</h2>
+            <div class="hub-grid" id="module-cards"></div>
+          </div>
+        </div>
+
+        <div class="view-module-intro docs-hidden" id="view-module">
+          <div class="wrap">
+            <h1 id="module-intro-title"></h1>
+            <p class="lead" id="module-intro-tagline"></p>
+            <div class="body" id="module-intro-body"></div>
+            <div class="note">
+              Selecione uma <strong>rotina</strong> na barra lateral (expanda o módulo se necessário) para abrir a página de documentação correspondente.
+            </div>
+          </div>
+        </div>
+
+        <div class="view-doc docs-hidden" id="view-doc">
+          <iframe id="doc-frame" title="Conteúdo da documentação" src="about:blank"></iframe>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="layout">
-    <aside class="sidebar"><div class="sidebar-title">Wiki SIN ERP</div>
-<div class="nav-group"><h3>Visão geral</h3>
-<a class="active" href="index.html">Início</a>
-<a class="" href="pages/visao-geral/como-usar.html">Como usar a wiki</a>
-<a class="" href="pages/visao-geral/fluxo-real.html">Fluxo real do projeto</a>
-</div>
-<div class="nav-group"><h3>Estrutura</h3>
-<a class="" href="pages/estrutura/estrutura-repositorio.html">Estrutura do repositório</a>
-<a class="" href="pages/estrutura/backend-real.html">Backend real</a>
-<a class="" href="pages/estrutura/frontend-real.html">Frontend real</a>
-</div>
-<div class="nav-group"><h3>Módulos e rotinas</h3>
-<a class="" href="pages/modulos/modulos-existentes.html">Módulos existentes</a>
-<a class="" href="pages/modulos/como-criar-modulo.html">Como criar novo módulo</a>
-<a class="" href="pages/rotinas/como-criar-rotina.html">Como criar nova rotina</a>
-<a class="" href="pages/rotinas/fluxo-rotina.html">Fluxo de uma rotina</a>
-</div>
-<div class="nav-group"><h3>Tabelas</h3>
-<a class="" href="pages/tabelas/como-criar-tabela.html">Como criar nova tabela</a>
-<a class="" href="pages/tabelas/como-adicionar-campos.html">Como adicionar novos campos</a>
-<a class="" href="pages/tabelas/index-tabelas.html">Índice de tabelas do sistema</a>
-<a class="" href="pages/tabelas/usrsys.html">USRSYS - Usuários</a>
-<a class="" href="pages/tabelas/usr_groups.html">USR_GROUPS - Grupos</a>
-<a class="" href="pages/tabelas/e01.html">E01 - Produtos</a>
-<a class="" href="pages/tabelas/e02.html">E02 - Categorias</a>
-<a class="" href="pages/tabelas/e05.html">E05 - Movimentos de estoque</a>
-<a class="" href="pages/tabelas/e06.html">E06 - TES</a>
-<a class="" href="pages/tabelas/f01.html">F01 - Contas financeiras</a>
-<a class="" href="pages/tabelas/f04.html">F04 - Transações</a>
-<a class="" href="pages/tabelas/c01.html">C01 - Clientes</a>
-</div>
-<div class="nav-group"><h3>Apoio</h3>
-<a class="" href="pages/problemas/problemas-solucoes.html">Problemas e soluções</a>
-</div></aside>
-    <main class="content">
-      
-<div class="card">
-  <h2>Início</h2>
-  <p>Esta versão da wiki foi montada com base no repositório real que você anexou. A ideia aqui não é ser bonita, e sim ser fácil de usar e crescer junto com o projeto.</p>
-  <div class="note">Ordem recomendada para um programador novo: <strong>Como usar a wiki → Fluxo real do projeto → Estrutura do repositório → Backend real → Frontend real → Módulos existentes → Tabelas principais</strong>.</div>
-</div>
 
-<div class="grid">
-  <div class="mini"><h3>Backend</h3><p>FastAPI com módulos separados por assunto e rotinas.</p></div>
-  <div class="mini"><h3>Frontend</h3><p>React + Vite com páginas por módulo.</p></div>
-  <div class="mini"><h3>Banco</h3><p>Models por módulo e migrations com Alembic.</p></div>
-  <div class="mini"><h3>Padrão</h3><p>Módulo → rotina → rotas → service → telas.</p></div>
-</div>
-
-<div class="card">
-  <h2>Resumo do que existe hoje</h2>
-  <table class="table">
-    <tr><th>Área</th><th>O que existe no repositório</th></tr>
-    <tr><td>Autenticação</td><td>Login e endpoint /auth/me</td></tr>
-    <tr><td>Configuração</td><td>Usuários e grupos/permissões</td></tr>
-    <tr><td>Estoque</td><td>Categorias, produtos, TES, saldo e movimentos</td></tr>
-    <tr><td>Financeiro</td><td>Contas, bancos, categorias, transações e saldo</td></tr>
-    <tr><td>Comercial</td><td>Cadastro de clientes</td></tr>
-  </table>
-</div>
-
-      <div class="footer">Base usada: repositório SIN_ERP-main anexado na conversa.</div>
-    </main>
-  </div>
+  <script src="docs-shell.js"></script>
 </body>
 </html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FINA0002 — Caixa (SIN ERP)</title>
+  <link rel="stylesheet" href="fina.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="fina.html">← Módulo FINA</a>
+    <h1><span class="tag fina2">fina0002</span> Caixa e saldo</h1>
+    <p class="lead">Lançamentos na conta (<code>f04</code>) e consulta de saldo em data.</p>
+    <p class="meta">Prefixo: <code>/fina/fina0002</code> · Front: <code>transactions</code>, <code>balance</code> · <span class="path">app/src/pages/fina/fina0002/</span></p>
+
+    <nav class="doc-toc" aria-label="Índice">
+      <ol>
+        <li><a href="#api">API</a></li>
+        <li><a href="#rel">Ver também</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="api">API</h2>
+    <table>
+      <thead><tr><th>Método</th><th>Endpoint</th><th>Descrição</th></tr></thead>
+      <tbody>
+        <tr><td>POST</td><td><code>/fina/fina0002/transactions</code></td><td>Novo lançamento <code>f04</code>.</td></tr>
+        <tr><td>GET</td><td><code>/fina/fina0002/transactions</code></td><td>Query: <code>f04_accountid</code>, <code>date_from</code>, <code>date_to</code>.</td></tr>
+        <tr><td>GET</td><td><code>/fina/fina0002/balance</code></td><td>Query obrigatória: <code>f01_id</code>, <code>date_to</code> — saldo projetado.</td></tr>
+      </tbody>
+    </table>
+    <p>Arquivos: <span class="path">API/app/modules/fina/routines/fina0002/</span></p>
+
+    <h2 id="rel">Ver também</h2>
+    <ul>
+      <li><a href="fina-dados.html">Tabela f04</a></li>
+      <li><a href="fina0003.html">FINA0003 — Contas a pagar</a></li>
+    </ul>
+  </div>
+</body>
+</html>

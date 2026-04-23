@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>COMP — Dados (SIN ERP)</title>
+  <link rel="stylesheet" href="comp.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="comp.html">← Módulo COMP</a>
+    <h1>Tabelas — COMP</h1>
+    <p class="lead">Compras: fornecedor, pedido, itens e recebimentos. Fonte: <span class="path">API/app/modules/comp/models.py</span>.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tabela / entidade</th><th>Descrição</th><th>Rotina</th></tr></thead>
+        <tbody>
+          <tr><td><code>c11</code></td><td>Fornecedor (razão, fantasia, CNPJ, prazo, endereço…).</td><td>comp0001</td></tr>
+          <tr><td><code>c12</code></td><td>Cabeçalho do pedido (código, fornecedor FK, status, datas…).</td><td>comp0002, comp0003</td></tr>
+          <tr><td>Itens do pedido</td><td>Linhas de produto/qtd/preço (modelo em <code>comp/models.py</code>).</td><td>comp0002</td></tr>
+          <tr><td>Recebimentos</td><td>Registros de entrada vinculados ao pedido (fluxo comp0003).</td><td>comp0003</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Mapa</h2>
+    <pre><code>API/app/modules/comp/routines/comp0001|comp0002|comp0003/
+app/src/pages/comp/comp0001|comp0002/</code></pre>
+  </div>
+</body>
+</html>

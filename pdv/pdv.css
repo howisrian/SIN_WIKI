@@ -1,0 +1,95 @@
+/* SIN ERP — documentação do módulo (compartilhado) */
+:root {
+  --bg: #0f1419;
+  --card: #1a222d;
+  --border: #2d3a4a;
+  --text: #e7edf4;
+  --muted: #8b9cb3;
+  --accent: #3d9cee;
+  --ok: #3ecf8e;
+  --font: "Segoe UI", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; font-family: var(--font); background: var(--bg); color: var(--text);
+  line-height: 1.55; font-size: 15px;
+}
+a { color: var(--accent); }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 920px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+h1 { font-size: 1.75rem; font-weight: 600; margin: 0 0 0.5rem; }
+h2 { font-size: 1.25rem; font-weight: 600; margin: 2.25rem 0 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.35rem; }
+h3 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: #c5d0dd; }
+p { margin: 0.5rem 0; color: var(--muted); }
+p.lead { color: #b8c5d6; font-size: 1rem; }
+.meta { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.5rem; }
+.doc-back {
+  display: inline-flex; align-items: center; gap: 0.35rem; margin-bottom: 1.25rem;
+  font-size: 0.92rem; text-decoration: none; color: var(--muted);
+}
+.doc-back:hover { color: var(--accent); }
+nav.doc-toc {
+  position: sticky; top: 0; z-index: 10; background: rgba(15, 20, 25, 0.92);
+  backdrop-filter: blur(8px); border-bottom: 1px solid var(--border);
+  margin: 0 -1.25rem 1.5rem; padding: 0.75rem 1.25rem;
+}
+nav.doc-toc ol { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.1rem; margin: 1rem 0; }
+.tag { display: inline-block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em;
+  background: #243044; color: #9ec9ff; padding: 0.2rem 0.45rem; border-radius: 4px; font-weight: 600; }
+.tag.pdv1 { color: #8fd4a2; background: #1a2e22; }
+.tag.pdv2 { color: #b8a8ff; background: #241f33; }
+.tag.shared { color: #e8c27a; background: #2e2618; }
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 0.5rem 0; }
+th, td { border: 1px solid var(--border); padding: 0.5rem 0.55rem; text-align: left; vertical-align: top; }
+th { background: #141c25; color: #c5d0dd; }
+code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.86em; background: #141a22; padding: 0.12em 0.35em; border-radius: 4px; }
+pre { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem; overflow: auto; font-size: 0.82rem; }
+.path { color: #7eb8ff; word-break: break-all; }
+ul { margin: 0.4rem 0; padding-left: 1.2rem; color: var(--muted); }
+li { margin: 0.25rem 0; }
+.note { border-left: 3px solid var(--accent); padding: 0.5rem 0.75rem; background: #151d28; margin: 1rem 0; border-radius: 0 6px 6px 0; }
+.doc-extend { background: #141a20; border: 1px dashed var(--border); border-radius: 8px; padding: 1rem 1.1rem; margin-top: 2rem; font-size: 0.9rem; }
+.doc-extend h3 { margin-top: 0; }
+.doc-extend code { font-size: 0.9em; }
+
+/* Hub do módulo (pdv.html) */
+.hub-section-title {
+  font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+  margin: 2rem 0 0.75rem; font-weight: 600;
+}
+.hub-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem; margin: 0.5rem 0 0;
+}
+a.hub-card {
+  display: block; text-decoration: none; color: inherit;
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.15rem 1.25rem; transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+a.hub-card:hover {
+  border-color: var(--accent); background: #1c2633; text-decoration: none; transform: translateY(-1px);
+}
+a.hub-card h2 { font-size: 1.1rem; margin: 0 0 0.5rem; border: 0; padding: 0; }
+a.hub-card p { margin: 0; font-size: 0.92rem; }
+a.hub-card .hub-cta { margin-top: 0.75rem; font-size: 0.85rem; color: var(--accent); }
+a.hub-card.hub-card--secondary { opacity: 0.95; }
+
+/* Tabelas largas (dicionário de colunas) */
+.table-wrap {
+  overflow-x: auto;
+  margin: 0.75rem 0;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.table-wrap table {
+  margin: 0;
+  min-width: 720px;
+}
+.table-wrap th,
+.table-wrap td {
+  font-size: 0.84rem;
+}
+.col-dict code { white-space: nowrap; }
+.anchor-target { scroll-margin-top: 4.5rem; }

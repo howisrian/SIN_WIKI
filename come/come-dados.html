@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>COME — Dados (SIN ERP)</title>
+  <link rel="stylesheet" href="come.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="come.html">← Módulo COME</a>
+    <h1>Tabela c01 — Clientes</h1>
+    <p class="lead">Cadastro usado em vendas (PDV), fiado (<code>p03_custid</code>) e relatórios. Modelo completo: <span class="path">API/app/modules/come/models.py</span> (<code>C01</code>).</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Grupo</th><th>Campos (exemplos)</th></tr></thead>
+        <tbody>
+          <tr><td>Identificação</td><td><code>c01_id</code>, <code>c01_cod</code> (único), <code>c01_nome</code>, <code>c01_tpessoa</code> (F/J), <code>c01_doc</code> (CPF/CNPJ único)</td></tr>
+          <tr><td>Contato / endereço</td><td><code>c01_fone</code>, <code>c01_email</code>, CEP, logradouro, número, bairro, cidade, UF…</td></tr>
+          <tr><td>Controle</td><td>datas, flags de ativo conforme modelo</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Mapa</h2>
+    <pre><code>API/app/modules/come/routines/come0001/
+app/src/pages/come/come0001/</code></pre>
+  </div>
+</body>
+</html>

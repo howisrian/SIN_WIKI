@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FINA0003 — Contas a pagar (SIN ERP)</title>
+  <link rel="stylesheet" href="fina.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="fina.html">← Módulo FINA</a>
+    <h1><span class="tag fina3">fina0003</span> Contas a pagar</h1>
+    <p class="lead">Agenda financeira <code>f05</code> (previsto pagar/receber conforme modelo).</p>
+    <p class="meta">Prefixo: <code>/fina/fina0003</code> · Front: <code>fina0003</code> · <span class="path">app/src/pages/fina/fina0003/FINA0003Page.jsx</span></p>
+
+    <nav class="doc-toc" aria-label="Índice">
+      <ol>
+        <li><a href="#api">API</a></li>
+        <li><a href="#rel">Ver também</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="api">API</h2>
+    <table>
+      <thead><tr><th>Método</th><th>Endpoint</th><th>Descrição</th></tr></thead>
+      <tbody>
+        <tr><td>GET</td><td><code>/fina/fina0003/payables</code></td><td>Filtros: <code>f05_accountid</code>, <code>status</code>, <code>date_from</code>, <code>date_to</code>.</td></tr>
+        <tr><td>POST</td><td><code>/fina/fina0003/payables</code></td><td>Inclui título.</td></tr>
+        <tr><td>PUT</td><td><code>/fina/fina0003/payables/{f05_id}</code></td><td>Atualiza.</td></tr>
+        <tr><td>DELETE</td><td><code>/fina/fina0003/payables/{f05_id}</code></td><td>Exclui.</td></tr>
+      </tbody>
+    </table>
+    <p>Arquivos: <span class="path">API/app/modules/fina/routines/fina0003/</span></p>
+
+    <h2 id="rel">Ver também</h2>
+    <ul>
+      <li><a href="fina-dados.html">Tabela f05</a></li>
+    </ul>
+  </div>
+</body>
+</html>

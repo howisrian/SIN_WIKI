@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PDV0001 — Operação do caixa (SIN ERP)</title>
+  <link rel="stylesheet" href="pdv.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="pdv.html">← Módulo PDV</a>
+    <h1><span class="tag pdv1">pdv0001</span> Operação do caixa</h1>
+    <p class="lead">Sessão de caixa, vendas, pagamentos, sangria e fechamento. Tela otimizada para o balcão (fullscreen, atalhos).</p>
+    <p class="meta">Código: <code>app/src/pages/pdv/pdv0001/</code> · API: <code>API/app/modules/pdv/routines/pdv0001/</code></p>
+
+    <nav class="doc-toc" aria-label="Índice">
+      <ol>
+        <li><a href="#front">Frontend</a></li>
+        <li><a href="#api">API</a></li>
+        <li><a href="#db">Tabelas e colunas</a></li>
+        <li><a href="#rel">Ver também</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="front">Frontend</h2>
+    <p><span class="path">app/src/pages/pdv/pdv0001/PDV0001Page.jsx</span> · <span class="path">app/src/pages/pdv/pdv0001/pdv0001.css</span></p>
+    <p>Serviço de pagamento: <span class="path">app/src/services/paymentService.js</span> — formas de pagamento, troco, preparação do payload de venda.</p>
+    <ul>
+      <li><strong>Rota de app:</strong> <code>App.jsx</code> mapeia <code>pdv0001</code>; layout pode ser oculto em modo operacional.</li>
+      <li><strong>Abertura:</strong> lista caixas ativos, status de sessão, fundo de troco, abre sessão.</li>
+      <li><strong>Balcão:</strong> código de barras, busca de produtos, carrinho, cliente para fiado (<code>on_tab</code>).</li>
+      <li><strong>Pagamento:</strong> múltiplas linhas; simulação de gateway em dev.</li>
+      <li><strong>Fechamento e sangria</strong> com resumos e histórico na sessão.</li>
+    </ul>
+
+    <h2 id="api">API (FastAPI)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Método</th>
+          <th>Endpoint</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>POST</td>
+          <td><code>/pdv/cash-session/open</code></td>
+          <td>Abre sessão. Body: <code>P02OpenIn</code> (<code>p02_p01id</code>, <code>p02_opening</code>).</td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td><code>/pdv/cash-session/current?p01_id=</code></td>
+          <td>Sessão aberta do caixa.</td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td><code>/pdv/cash-session/open?p01_id=</code></td>
+          <td>Idem <code>current</code>.</td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td><code>/pdv/cash-session/history</code></td>
+          <td>Query: <code>p01_id</code>, <code>status</code>, <code>opened_from</code>, <code>opened_to</code>.</td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td><code>/pdv/cash-session/{p02_id}/summary</code></td>
+          <td>Resumo para fechamento.</td>
+        </tr>
+        <tr>
+          <td>POST</td>
+          <td><code>/pdv/cash-session/close</code></td>
+          <td>Body: <code>P02CloseIn</code> (<code>p02_p01id</code> opc., <code>p02_closing</code>).</td>
+        </tr>
+        <tr>
+          <td>POST</td>
+          <td><code>/pdv/cash-session/{p02_id}/close</code></td>
+          <td>Body: <code>p02_closing</code>.</td>
+        </tr>
+        <tr>
+          <td>POST</td>
+          <td><code>/pdv/cash-session/{p02_id}/withdrawal</code></td>
+          <td>Body: <code>P06CreateIn</code>.</td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td><code>/pdv/cash-session/{p02_id}/withdrawals</code></td>
+          <td>Lista sangrias.</td>
+        </tr>
+        <tr>
+          <td>POST</td>
+          <td><code>/pdv/sales</code></td>
+          <td>Venda: <code>P03CreateIn</code> (itens <code>P04In</code>, <code>P05In</code>, <code>enforce_stock</code>).</td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td><code>/pdv/sales?p01_id=&amp;p02_id=</code></td>
+          <td>Lista vendas.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Arquivos: <code>routes.py</code>, <code>services.py</code>, <code>schemas.py</code>, <code>payment_service.py</code>.</p>
+
+    <h2 id="db">Tabelas e colunas (banco de dados)</h2>
+    <p>Esta rotina <strong>grava e lê</strong> principalmente as tabelas abaixo. O dicionário completo (tipo, nulidade, valores permitidos, FKs e aliases de pagamento) está em <a href="pdv-dados.html">Modelos, tabelas e colunas</a>.</p>
+    <ul>
+      <li><strong><code>p01</code></strong> — caixa (validação de ativo ao abrir sessão).</li>
+      <li><strong><code>p02</code></strong> — sessão (abertura, fechamento, totais por forma de pagamento, status <code>OPEN</code>/<code>CLOSED</code>).</li>
+      <li><strong><code>p03</code></strong> — cabeçalho da venda (total, troco, cliente opcional).</li>
+      <li><strong><code>p04</code></strong> — itens (produto <code>e01</code>, quantidade, preços).</li>
+      <li><strong><code>p05</code></strong> — linhas de pagamento (<code>p05_type</code>: cash, pix, cartões, voucher, on_tab).</li>
+      <li><strong><code>p06</code></strong> — sangrias vinculadas à sessão.</li>
+      <li><strong>Dependências:</strong> <code>c01</code> (cliente, especialmente para fiado), <code>e01</code> (produto); com estoque obrigatório, TES <code>e06</code> e movimentos via módulo estoque.</li>
+    </ul>
+
+    <h2 id="rel">Ver também</h2>
+    <ul>
+      <li><a href="pdv-dados.html">Modelos ORM e mapa do repositório</a></li>
+      <li><a href="pdv0002.html">PDV0002 — Cadastro de caixas</a></li>
+    </ul>
+  </div>
+</body>
+</html>

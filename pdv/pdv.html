@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PDV — SIN ERP (documentação)</title>
+  <link rel="stylesheet" href="pdv.css" />
+</head>
+<body>
+  <div class="wrap">
+    <h1>Módulo PDV</h1>
+    <p class="lead">Documentação do ponto de venda. Escolha a <strong>rotina de produto</strong> (telas e API) ou a referência técnica compartilhada.</p>
+    <p class="meta">API <code>/pdv</code> · Tabelas <code>p01</code>…<code>p06</code> (+ <code>c01</code>, <code>e01</code> na venda) · <a href="pdv-dados.html">Dicionário de colunas e pagamentos</a> · Permissões de menu <code>pdv0001</code>, <code>pdv0002</code></p>
+
+    <h2 class="hub-section-title">Rotinas</h2>
+    <p style="color: var(--muted); font-size: 0.95rem; margin: 0 0 0.5rem;">Cada rotina tem sua própria página. Para <strong>novas rotinas</strong> (ex. <code>pdv0003</code>), crie <code>pdv0003.html</code> e adicione um card na grade abaixo.</p>
+    <div class="hub-grid" id="rotinas">
+      <a class="hub-card" href="pdv0001.html">
+        <span class="tag pdv1">pdv0001</span>
+        <h2>Operação do caixa</h2>
+        <p>PDV de balcão: sessão, venda, pagamentos, sangria, fechamento.</p>
+        <p class="hub-cta">Abrir documentação →</p>
+      </a>
+      <a class="hub-card" href="pdv0002.html">
+        <span class="tag pdv2">pdv0002</span>
+        <h2>Cadastro de caixas</h2>
+        <p>CRUD de caixas, histórico de sessões, filtros.</p>
+        <p class="hub-cta">Abrir documentação →</p>
+      </a>
+    </div>
+
+    <h2 class="hub-section-title">Referência do módulo</h2>
+    <div class="hub-grid">
+      <a class="hub-card hub-card--secondary" href="pdv-dados.html">
+        <span class="tag shared">Compartilhado</span>
+        <h2>Tabelas, colunas &amp; repositório</h2>
+        <p>Dicionário de colunas (tipos, FKs, conteúdo), formas de pagamento, tabelas por rotina, c01/e01/e06, mapa de pastas.</p>
+        <p class="hub-cta">Abrir referência →</p>
+      </a>
+    </div>
+
+    <aside class="doc-extend" aria-label="Como estender">
+      <h3>Como adicionar mais conteúdo</h3>
+      <ol style="margin: 0.5rem 0 0; padding-left: 1.2rem; color: var(--muted);">
+        <li>Nova <strong>rotina</strong>: crie <code>pdvNNNN.html</code> (copiando uma rotina existente), altere título e conteúdo, inclua <code>pdv.css</code> e o link <code>href="pdv.html"</code> no topo. Depois, em <code>pdv.html</code>, adicione um <code class="path">&lt;a class="hub-card" href="pdvNNNN.html"&gt;…&lt;/a&gt;</code> na grade <code>#rotinas</code>.</li>
+        <li>Página <strong>extra</strong> (guia, diagrama): crie o HTML na mesma pasta e um card na seção apropriada (nova grade ou nova seção com <code>hub-section-title</code>).</li>
+        <li>Estilos comuns: edite <code>pdv.css</code> para manter o visual único do módulo.</li>
+      </ol>
+    </aside>
+  </div>
+</body>
+</html>

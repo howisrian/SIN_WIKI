@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>COMP0001 — Fornecedores (SIN ERP)</title>
+  <link rel="stylesheet" href="comp.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="comp.html">← Módulo COMP</a>
+    <h1><span class="tag comp1">comp0001</span> Fornecedores</h1>
+    <p class="lead">CRUD de fornecedor na tabela <code>c11</code>. Rotas registradas com prefixo <code>/suppliers</code> dentro de <code>/comp</code>.</p>
+    <p class="meta">Base: <code>/comp/suppliers</code> · Front: <code>comp0001</code> · <span class="path">app/src/pages/comp/comp0001/COMP0001Page.jsx</span></p>
+
+    <nav class="doc-toc" aria-label="Índice">
+      <ol>
+        <li><a href="#api">API</a></li>
+        <li><a href="#rel">Ver também</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="api">API</h2>
+    <table>
+      <thead><tr><th>Método</th><th>Endpoint</th><th>Descrição</th></tr></thead>
+      <tbody>
+        <tr><td>POST</td><td><code>/comp/suppliers/create</code></td><td>Inclui fornecedor.</td></tr>
+        <tr><td>GET</td><td><code>/comp/suppliers/list</code></td><td>Lista.</td></tr>
+        <tr><td>PUT</td><td><code>/comp/suppliers/{c11_id}</code></td><td>Atualiza.</td></tr>
+      </tbody>
+    </table>
+    <p>Arquivos: <span class="path">API/app/modules/comp/routines/comp0001/</span></p>
+
+    <h2 id="rel">Ver também</h2>
+    <ul>
+      <li><a href="comp-dados.html">Tabela c11</a></li>
+      <li><a href="comp0002.html">Pedidos de compra</a></li>
+    </ul>
+  </div>
+</body>
+</html>

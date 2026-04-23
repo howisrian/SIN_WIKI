@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>COMP0002 — Pedidos de compra (SIN ERP)</title>
+  <link rel="stylesheet" href="comp.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="comp.html">← Módulo COMP</a>
+    <h1><span class="tag comp2">comp0002</span> Pedidos de compra</h1>
+    <p class="lead">Pedido <code>c12</code> com itens, fornecedor e ciclo de status.</p>
+    <p class="meta">Prefixo: <code>/comp/comp0002</code> · Front: <code>comp0002</code> · <span class="path">app/src/pages/comp/comp0002/COMP0002Page.jsx</span></p>
+
+    <nav class="doc-toc" aria-label="Índice">
+      <ol>
+        <li><a href="#api">API</a></li>
+        <li><a href="#rel">Ver também</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="api">API</h2>
+    <table>
+      <thead><tr><th>Método</th><th>Endpoint</th><th>Descrição</th></tr></thead>
+      <tbody>
+        <tr><td>GET</td><td><code>/comp/comp0002/orders</code></td><td><code>search</code>, <code>status</code>.</td></tr>
+        <tr><td>GET</td><td><code>/comp/comp0002/orders/next-code</code></td><td>Próximo <code>c12_cod</code>.</td></tr>
+        <tr><td>POST</td><td><code>/comp/comp0002/orders</code></td><td>Cria pedido (201).</td></tr>
+        <tr><td>GET</td><td><code>/comp/comp0002/orders/{c12_id}</code></td><td>Detalhe com itens.</td></tr>
+        <tr><td>PUT</td><td><code>/comp/comp0002/orders/{c12_id}</code></td><td>Atualiza.</td></tr>
+      </tbody>
+    </table>
+    <p>Arquivos: <span class="path">API/app/modules/comp/routines/comp0002/</span></p>
+
+    <h2 id="rel">Ver também</h2>
+    <ul>
+      <li><a href="comp0003.html">Recebimento</a></li>
+      <li><a href="comp-dados.html">Tabelas c12 / itens</a></li>
+    </ul>
+  </div>
+</body>
+</html>

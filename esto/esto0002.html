@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ESTO0002 — Movimentação (SIN ERP)</title>
+  <link rel="stylesheet" href="esto.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="esto.html">← Módulo ESTO</a>
+    <h1><span class="tag esto2">esto0002</span> Movimentação de estoque</h1>
+    <p class="lead">Movimentos <code>e05</code> com TES; POST usa <code>get_current_user</code> para <code>usr_id</code>.</p>
+    <p class="meta">Prefixo: <code>/esto/esto0002</code> · Front: <code>stockMovements</code> · <span class="path">app/src/pages/esto/esto0002/StockMovementsPage.jsx</span></p>
+
+    <nav class="doc-toc" aria-label="Índice">
+      <ol>
+        <li><a href="#api">API</a></li>
+        <li><a href="#rel">Ver também</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="api">API</h2>
+    <table>
+      <thead><tr><th>Método</th><th>Endpoint</th><th>Descrição</th></tr></thead>
+      <tbody>
+        <tr><td>POST</td><td><code>/esto/esto0002/movements</code></td><td>Cria movimento (<code>E05Create</code>); usuário do token.</td></tr>
+        <tr><td>GET</td><td><code>/esto/esto0002/movements</code></td><td>Filtros: produto, TES, tipo, origem, ref, usuário, intervalo de datas.</td></tr>
+        <tr><td>GET</td><td><code>/esto/esto0002/products/{product_id}/balance</code></td><td>Saldo atual.</td></tr>
+        <tr><td>POST</td><td><code>/esto/esto0002/products/{product_id}/inventory</code></td><td>Query <code>counted_qty</code> (+ opcionais) — ajuste de inventário.</td></tr>
+      </tbody>
+    </table>
+    <p>Arquivos: <span class="path">API/app/modules/esto/routines/esto0002/</span></p>
+
+    <h2 id="rel">Ver também</h2>
+    <ul>
+      <li><a href="esto0003.html">ESTO0003 — TES</a></li>
+      <li><a href="esto-dados.html">Tabelas</a></li>
+    </ul>
+  </div>
+</body>
+</html>

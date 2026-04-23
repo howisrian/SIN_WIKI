@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CONF — Configuração (SIN ERP)</title>
+  <link rel="stylesheet" href="conf.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="../index.html#conf">← Documentação (menu)</a>
+    <h1>Módulo CONF</h1>
+    <p class="lead">Configuração de <strong>usuários</strong>, <strong>grupos</strong> e <strong>permissões</strong> por tela (chaves de módulo alinhadas ao menu do front).</p>
+    <p class="meta">API <code>/conf</code> · Autenticação: rotas exigem usuário logado (<code>get_current_user</code> no roteador) · Permissões granulares em <code>conf0002</code> via <code>require_permission</code> · Telas de app: chaves <code>users</code>, <code>groups</code></p>
+
+    <h2 class="hub-section-title">Rotinas</h2>
+    <p style="color: var(--muted); font-size: 0.95rem; margin: 0 0 0.5rem;">Cada rotina possui página própria. Novas rotinas (ex. <code>conf0003</code>): crie o HTML, o card abaixo e registre em <span class="path">sindocs/docs-shell.js</span>.</p>
+    <div class="hub-grid">
+      <a class="hub-card" href="conf0001.html">
+        <span class="tag conf1">conf0001</span>
+        <h2>Usuários</h2>
+        <p>Cadastro, listagem e atualização de usuários do sistema (login, nível, dados de contato).</p>
+        <p class="hub-cta">Abrir documentação →</p>
+      </a>
+      <a class="hub-card" href="conf0002.html">
+        <span class="tag conf2">conf0002</span>
+        <h2>Grupos e permissões</h2>
+        <p>Grupos, matriz CRUD por módulo, vínculo usuário–grupo, endpoint de permissões do usuário atual.</p>
+        <p class="hub-cta">Abrir documentação →</p>
+      </a>
+    </div>
+
+    <h2 class="hub-section-title">Referência do módulo</h2>
+    <div class="hub-grid">
+      <a class="hub-card hub-card--secondary" href="conf-dados.html">
+        <span class="tag shared">Compartilhado</span>
+        <h2>Tabelas e colunas</h2>
+        <p><code>usrsys</code>, <code>usr_groups</code>, <code>usr_group_permissions</code>, <code>usr_user_groups</code>, mapa de arquivos e <code>module_key</code>.</p>
+        <p class="hub-cta">Abrir referência →</p>
+      </a>
+    </div>
+
+    <aside class="doc-extend" aria-label="Como estender">
+      <h3>Como adicionar conteúdo</h3>
+      <ol style="margin: 0.5rem 0 0; padding-left: 1.2rem; color: var(--muted);">
+        <li>Nova <strong>rotina</strong>: <code>confNNNN.html</code>, link no hub, entrada em <code>MODULES</code> do shell, e rotas em <span class="path">API/app/modules/conf/</span>.</li>
+        <li>Novo <strong>módulo de menu</strong> no front: inclua a chave em <code>AVAILABLE_MODULES</code> (grupos) e nas checagens de UI; use a mesma chave em <code>module_key</code> e em <code>require_permission</code>.</li>
+        <li>Estilos: <code>conf.css</code>.</li>
+      </ol>
+    </aside>
+  </div>
+</body>
+</html>

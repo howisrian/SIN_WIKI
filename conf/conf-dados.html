@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CONF — Modelos e tabelas (SIN ERP)</title>
+  <link rel="stylesheet" href="conf.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="conf.html">← Módulo CONF</a>
+    <h1>Modelos de dados — Configuração</h1>
+    <p class="lead">Referência das tabelas de usuários, grupos e permissões. Convenção de nomes legada (<code>usrsys</code>, <code>usr_*</code>); novas tabelas no projeto devem seguir o padrão <code>xx</code> + dígitos quando possível (<span class="path">.cursor/rules.mdc</span>).</p>
+
+    <nav class="doc-toc" aria-label="Índice">
+      <ol>
+        <li><a href="#rotinas">Tabelas por rotina</a></li>
+        <li><a href="#usrsys">usrsys</a></li>
+        <li><a href="#usr_groups">usr_groups</a></li>
+        <li><a href="#usr_group_permissions">usr_group_permissions</a></li>
+        <li><a href="#usr_user_groups">usr_user_groups</a></li>
+        <li><a href="#permissions">Permissões em runtime</a></li>
+        <li><a href="#arquivos">Mapa de arquivos</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="rotinas" class="anchor-target">Tabelas por rotina</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Rotina</th>
+            <th>Tabelas</th>
+            <th>Observação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag conf1">conf0001</span></td>
+            <td><code>usrsys</code> (leitura/escrita); leitura de <code>usr_user_groups</code> via relacionamento</td>
+            <td>Senha armazenada como hash (<code>get_password_hash</code>).</td>
+          </tr>
+          <tr>
+            <td><span class="tag conf2">conf0002</span></td>
+            <td><code>usr_groups</code>, <code>usr_group_permissions</code>, <code>usr_user_groups</code>, <code>usrsys</code></td>
+            <td>Endpoints de grupo exigem permissões <code>groups</code> ou <code>users</code> conforme rota.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="usrsys" class="anchor-target">usrsys (<code>User</code>)</h2>
+    <p>Usuário do sistema. Inclui <code>SysIdMixin</code>: coluna <code>sys_id</code> (UUID) para uso interno; não expor em API pública.</p>
+    <div class="table-wrap">
+      <table class="col-dict">
+        <thead>
+          <tr>
+            <th>Coluna</th>
+            <th>Tipo (lógico)</th>
+            <th>Nulo</th>
+            <th>Função</th>
+            <th>Conteúdo / valores</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>sys_id</code></td>
+            <td>UUID</td>
+            <td>Não</td>
+            <td>Identificador interno estável.</td>
+            <td>Gerado pela aplicação.</td>
+          </tr>
+          <tr>
+            <td><code>usr_id</code></td>
+            <td>inteiro</td>
+            <td>Não</td>
+            <td>Chave primária.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>usr_user</code></td>
+            <td>string(50)</td>
+            <td>Não</td>
+            <td>Login único.</td>
+            <td>Texto; único no banco.</td>
+          </tr>
+          <tr>
+            <td><code>usr_pass</code></td>
+            <td>string(255)</td>
+            <td>Não</td>
+            <td>Hash da senha.</td>
+            <td>Nunca armazenar senha em claro; escrita via serviço de criação/atualização.</td>
+          </tr>
+          <tr>
+            <td><code>usr_level</code></td>
+            <td>inteiro</td>
+            <td>Não</td>
+            <td>Nível hierárquico numérico (legado).</td>
+            <td>Default 1; semântica definida pelo produto.</td>
+          </tr>
+          <tr>
+            <td><code>usr_active</code></td>
+            <td>boolean</td>
+            <td>Não</td>
+            <td>Usuário ativo.</td>
+            <td><code>true</code> / <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td><code>usr_name</code></td>
+            <td>string(100)</td>
+            <td>Sim</td>
+            <td>Nome exibição.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>usr_email</code></td>
+            <td>string(100)</td>
+            <td>Sim</td>
+            <td>E-mail.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>usr_phone</code></td>
+            <td>string(20)</td>
+            <td>Sim</td>
+            <td>Telefone.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>usr_dtcreated</code></td>
+            <td>string(50)</td>
+            <td>Sim</td>
+            <td>Data criação (texto).</td>
+            <td>Preenchido pelo serviço como string; formato livre acordado pelo app.</td>
+          </tr>
+          <tr>
+            <td><code>usr_dtupdated</code></td>
+            <td>string(50)</td>
+            <td>Sim</td>
+            <td>Última atualização.</td>
+            <td>Atualizado em <code>update_user</code>.</td>
+          </tr>
+          <tr>
+            <td><code>usr_lastlogin</code></td>
+            <td>string(50)</td>
+            <td>Sim</td>
+            <td>Último login (texto).</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>usr_idle_timeout</code></td>
+            <td>inteiro</td>
+            <td>Não</td>
+            <td>Timeout de ociosidade (minutos, uso depende do front/auth).</td>
+            <td>Default 15.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="usr_groups" class="anchor-target">usr_groups (<code>UserGroup</code>)</h2>
+    <p>Grupo de usuários para agrupar permissões. <code>SysIdMixin</code> inclui <code>sys_id</code>.</p>
+    <div class="table-wrap">
+      <table class="col-dict">
+        <thead>
+          <tr>
+            <th>Coluna</th>
+            <th>Tipo (lógico)</th>
+            <th>Nulo</th>
+            <th>Função</th>
+            <th>Conteúdo / valores</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>sys_id</code></td>
+            <td>UUID</td>
+            <td>Não</td>
+            <td>ID interno.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>grp_id</code></td>
+            <td>inteiro</td>
+            <td>Não</td>
+            <td>PK.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>grp_name</code></td>
+            <td>string(80)</td>
+            <td>Não</td>
+            <td>Nome do grupo.</td>
+            <td>Único.</td>
+          </tr>
+          <tr>
+            <td><code>grp_desc</code></td>
+            <td>string(200)</td>
+            <td>Sim</td>
+            <td>Descrição.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>grp_active</code></td>
+            <td>boolean</td>
+            <td>Não</td>
+            <td>Grupo ativo.</td>
+            <td>Grupos inativos não entram na fusão de permissões do usuário.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="usr_group_permissions" class="anchor-target">usr_group_permissions (<code>GroupPermission</code>)</h2>
+    <p>Uma linha por par (grupo, <code>module_key</code>). Restrição única <code>(grp_id, module_key)</code>.</p>
+    <div class="table-wrap">
+      <table class="col-dict">
+        <thead>
+          <tr>
+            <th>Coluna</th>
+            <th>Tipo (lógico)</th>
+            <th>Nulo</th>
+            <th>Função</th>
+            <th>Conteúdo / valores</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>id</code></td>
+            <td>inteiro</td>
+            <td>Não</td>
+            <td>PK surrogate.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>grp_id</code></td>
+            <td>FK → <code>usr_groups</code></td>
+            <td>Não</td>
+            <td>Grupo dono da permissão.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>module_key</code></td>
+            <td>string(60)</td>
+            <td>Não</td>
+            <td>Chave do módulo/tela no front.</td>
+            <td>Ex.: <code>users</code>, <code>groups</code>, <code>pdv0001</code>. Deve bater com <code>require_permission(module_key, …)</code> e com as chaves do menu.</td>
+          </tr>
+          <tr>
+            <td><code>can_view</code></td>
+            <td>boolean</td>
+            <td>Não</td>
+            <td>Permite visualizar.</td>
+            <td>Default <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td><code>can_create</code></td>
+            <td>boolean</td>
+            <td>Não</td>
+            <td>Permite criar.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>can_update</code></td>
+            <td>boolean</td>
+            <td>Não</td>
+            <td>Permite alterar.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>can_delete</code></td>
+            <td>boolean</td>
+            <td>Não</td>
+            <td>Permite excluir.</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="usr_user_groups" class="anchor-target">usr_user_groups (<code>UserGroupLink</code>)</h2>
+    <p>Associação N:N usuário ↔ grupo. Unicidade <code>(usr_id, grp_id)</code>.</p>
+    <div class="table-wrap">
+      <table class="col-dict">
+        <thead>
+          <tr>
+            <th>Coluna</th>
+            <th>Tipo (lógico)</th>
+            <th>Nulo</th>
+            <th>Função</th>
+            <th>Conteúdo / valores</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>id</code></td>
+            <td>inteiro</td>
+            <td>Não</td>
+            <td>PK.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>usr_id</code></td>
+            <td>FK → <code>usrsys</code></td>
+            <td>Não</td>
+            <td>Usuário.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>grp_id</code></td>
+            <td>FK → <code>usr_groups</code></td>
+            <td>Não</td>
+            <td>Grupo.</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="permissions" class="anchor-target">Permissões em runtime</h2>
+    <p><span class="path">API/app/core/permissions.py</span> — <code>get_user_permissions</code> percorre grupos ativos do usuário e agrega flags com OR. <code>require_permission("groups", "can_view")</code> exige que exista entrada com <code>module_key == "groups"</code> e flag correspondente <code>true</code>.</p>
+
+    <h2 id="arquivos">Mapa de arquivos</h2>
+    <pre><code>API/app/modules/conf/
+├── models.py, router.py
+└── routines/
+    ├── conf0001/ routes.py, services.py, schemas.py
+    └── conf0002/ routes.py, services.py, schemas.py
+
+app/src/pages/conf/
+├── conf0001/ UsersPage.jsx (e painéis)
+└── conf0002/ GroupsPage.jsx, GroupFormPanel.jsx, conf0002.css
+
+API/app/core/permissions.py
+sindocs/conf/  (conf.html, conf0001.html, conf0002.html, conf-dados.html, conf.css)</code></pre>
+  </div>
+</body>
+</html>

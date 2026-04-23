@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CONF0002 — Grupos e permissões (SIN ERP)</title>
+  <link rel="stylesheet" href="conf.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="conf.html">← Módulo CONF</a>
+    <h1><span class="tag conf2">conf0002</span> Grupos e permissões</h1>
+    <p class="lead">Cadastro de grupos com permissões por <code>module_key</code> (ver, criar, alterar, excluir), atribuição de grupos a usuários e leitura das permissões efetivas do usuário logado.</p>
+    <p class="meta">Prefixo API: <code>/conf/groups</code> · Permissões: <span class="path">API/app/core/permissions.py</span> · Front: <span class="path">app/src/pages/conf/conf0002/GroupsPage.jsx</span></p>
+
+    <nav class="doc-toc" aria-label="Índice">
+      <ol>
+        <li><a href="#front">Frontend</a></li>
+        <li><a href="#api">API</a></li>
+        <li><a href="#module-keys">Chaves de módulo (<code>module_key</code>)</a></li>
+        <li><a href="#db">Tabelas</a></li>
+        <li><a href="#rel">Ver também</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="front">Frontend</h2>
+    <p><span class="path">app/src/pages/conf/conf0002/GroupsPage.jsx</span> · <span class="path">GroupFormPanel.jsx</span> · <span class="path">conf0002.css</span></p>
+    <ul>
+      <li>Lista de módulos disponíveis para a matriz de permissões está em <code>AVAILABLE_MODULES</code> (chave <code>key</code> = valor gravado em <code>module_key</code>).</li>
+      <li>Ao salvar grupo, envia lista de permissões com <code>can_view</code>, <code>can_create</code>, <code>can_update</code>, <code>can_delete</code> por módulo.</li>
+      <li>Vínculo de grupos a usuários usa <code>PUT /conf/groups/users/{usr_id}/assign</code> com corpo <code>{ "grp_ids": [...] }</code>.</li>
+    </ul>
+
+    <h2 id="api">API (FastAPI)</h2>
+    <p>Rotas protegidas por <code>require_permission(module_key, ação)</code>, exceto <code>GET /conf/groups/me/permissions</code>, que usa apenas o usuário atual.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Método</th>
+          <th>Endpoint</th>
+          <th>Permissão</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>POST</td>
+          <td><code>/conf/groups/create</code></td>
+          <td><code>groups</code> · <code>can_create</code></td>
+          <td>Body <code>GroupCreate</code>: nome, descrição, ativo, lista de <code>permissions</code>. Não permite <code>module_key</code> duplicado no mesmo grupo.</td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td><code>/conf/groups/list</code></td>
+          <td><code>groups</code> · <code>can_view</code></td>
+          <td>Grupos com permissões e usuários vinculados.</td>
+        </tr>
+        <tr>
+          <td>PUT</td>
+          <td><code>/conf/groups/{grp_id}</code></td>
+          <td><code>groups</code> · <code>can_update</code></td>
+          <td>Body <code>GroupUpdate</code>. Se <code>permissions</code> for enviado, substitui todas as linhas do grupo em <code>usr_group_permissions</code>.</td>
+        </tr>
+        <tr>
+          <td>PUT</td>
+          <td><code>/conf/groups/users/{usr_id}/assign</code></td>
+          <td><code>users</code> · <code>can_update</code></td>
+          <td>Body <code>UserGroupAssignIn</code> (<code>grp_ids</code>). Remove vínculos anteriores e recria.</td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td><code>/conf/groups/me/permissions</code></td>
+          <td>—</td>
+          <td>Permissões agregadas do usuário autenticado (união OR entre grupos ativos).</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Arquivos: <code>routes.py</code>, <code>services.py</code>, <code>schemas.py</code>.</p>
+
+    <h2 id="module-keys">Chaves de módulo (<code>module_key</code>)</h2>
+    <p>Devem coincidir com as chaves de menu/página usadas no React (ex.: <code>users</code>, <code>groups</code>, <code>dashboard</code>, <code>pdv0001</code>). O backend compara literalmente na checagem <code>require_permission("groups", "can_view")</code>, etc.</p>
+    <div class="note">
+      <strong>Fusão de permissões:</strong> se um usuário pertence a vários grupos ativos, <code>get_user_permissions</code> faz OR por <code>module_key</code> em cada flag (<code>can_view</code>, …).
+    </div>
+
+    <h2 id="db">Tabelas</h2>
+    <p><code>usr_groups</code>, <code>usr_group_permissions</code>, <code>usr_user_groups</code>; usuários em <code>usrsys</code>. Ver <a href="conf-dados.html">conf-dados.html</a>.</p>
+
+    <h2 id="rel">Ver também</h2>
+    <ul>
+      <li><a href="conf-dados.html">Tabelas e colunas</a></li>
+      <li><a href="conf0001.html">CONF0001 — Usuários</a></li>
+    </ul>
+  </div>
+</body>
+</html>

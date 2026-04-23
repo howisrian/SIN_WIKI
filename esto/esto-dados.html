@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ESTO — Dados (SIN ERP)</title>
+  <link rel="stylesheet" href="esto.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="esto.html">← Módulo ESTO</a>
+    <h1>Tabelas — ESTO</h1>
+    <p class="lead">Entidades principais. Colunas completas em <span class="path">API/app/modules/esto/models.py</span>.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tabela</th><th>Descrição</th><th>Rotinas</th></tr></thead>
+        <tbody>
+          <tr><td><code>e01</code></td><td>Produto (código, EAN, preços, custos, NCM…).</td><td>esto0001, PDV <code>p04</code></td></tr>
+          <tr><td><code>e02</code></td><td>Categoria de produto.</td><td>esto0001</td></tr>
+          <tr><td><code>e04</code></td><td>Saldo por produto.</td><td>esto0001, movimentos</td></tr>
+          <tr><td><code>e05</code></td><td>Movimento (qtd, TES, ref., usuário, tipo).</td><td>esto0001, esto0002</td></tr>
+          <tr><td><code>e06</code></td><td>Tipo de estoque (TES).</td><td>esto0003, esto0002, PDV</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Mapa de arquivos</h2>
+    <pre><code>API/app/modules/esto/routines/esto0001|esto0002|esto0003/
+app/src/pages/esto/esto0001|esto0002|esto0003/</code></pre>
+  </div>
+</body>
+</html>

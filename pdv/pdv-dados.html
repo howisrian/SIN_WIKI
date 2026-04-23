@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PDV — Modelos, tabelas e colunas (SIN ERP)</title>
+  <link rel="stylesheet" href="pdv.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="pdv.html">← Módulo PDV</a>
+    <h1>Modelos de dados e repositório</h1>
+    <p class="lead">Referência compartilhada entre <code>pdv0001</code> e <code>pdv0002</code>, com <strong>dicionário de colunas</strong>, tipos, regras de negócio e tabelas externas usadas na venda.</p>
+    <p class="meta">Fonte de verdade do schema: <span class="path">API/app/modules/pdv/models.py</span> · Schemas de API: <span class="path">routines/pdv0001/schemas.py</span>, <span class="path">routines/pdv0002/schemas.py</span></p>
+
+    <nav class="doc-toc" aria-label="Índice">
+      <ol>
+        <li><a href="#rotinas">Tabelas por rotina</a></li>
+        <li><a href="#pagamentos">Formas de pagamento (<code>p05_type</code>)</a></li>
+        <li><a href="#p01">p01 — Caixas</a></li>
+        <li><a href="#p02">p02 — Sessões</a></li>
+        <li><a href="#p03">p03 — Vendas</a></li>
+        <li><a href="#p04">p04 — Itens</a></li>
+        <li><a href="#p05">p05 — Pagamentos</a></li>
+        <li><a href="#p06">p06 — Sangrias</a></li>
+        <li><a href="#externas">Tabelas externas (cliente, produto, estoque)</a></li>
+        <li><a href="#contrato">Contrato API / front</a></li>
+        <li><a href="#arquivos">Mapa de arquivos</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="rotinas" class="anchor-target">Tabelas por rotina</h2>
+    <p>Indica quais entidades cada tela/API manipula diretamente ou via join. Útil para auditoria e novos relatórios.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Rotina</th>
+            <th>Tabelas principais</th>
+            <th>Observação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag pdv1">pdv0001</span> Operação do caixa</td>
+            <td><code>p01</code> (leitura), <code>p02</code>, <code>p03</code>, <code>p04</code>, <code>p05</code>, <code>p06</code></td>
+            <td>Venda grava <code>p03</code>–<code>p05</code>; itens referenciam <code>e01</code>. Cliente opcional: <code>c01</code>. Com <code>enforce_stock=true</code>, movimenta estoque via TES (<code>e06</code> + movimentos).</td>
+          </tr>
+          <tr>
+            <td><span class="tag pdv2">pdv0002</span> Cadastro de caixas</td>
+            <td><code>p01</code></td>
+            <td>Histórico de sessões na mesma tela usa <code>GET /pdv/cash-session/history</code> (dados de <code>p02</code> + nome do caixa em <code>p01</code>).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="pagamentos" class="anchor-target">Formas de pagamento (<code>p05_type</code>)</h2>
+    <p>Valores <strong>normalizados</strong> gravados em <code>p05.p05_type</code> (string até 20 caracteres). A API aceita alguns <strong>sinônimos</strong> na entrada; o backend converte antes de persistir (ver <span class="path">pdv0001/services.py</span>, função <code>_normalize_payment_type</code>).</p>
+    <div class="table-wrap">
+      <table class="col-dict">
+        <thead>
+          <tr>
+            <th>Valor armazenado</th>
+            <th>Significado</th>
+            <th>Conteúdo / regra</th>
+            <th>Aliases aceitos (entrada)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>cash</code></td>
+            <td>Dinheiro</td>
+            <td>Entra no saldo físico esperado do fechamento. Troco da venda em <code>p03_change</code>.</td>
+            <td><code>dinheiro</code></td>
+          </tr>
+          <tr>
+            <td><code>pix</code></td>
+            <td>PIX</td>
+            <td>Em dev, passa por simulação em <code>payment_service.py</code>; não aumenta “gaveta” no mesmo sentido do dinheiro, mas entra nos totais da sessão ao fechar.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>credit_card</code></td>
+            <td>Cartão de crédito</td>
+            <td>Simulado (aprovado) em dev.</td>
+            <td><code>credito</code>, <code>cartao_credito</code></td>
+          </tr>
+          <tr>
+            <td><code>debit_card</code></td>
+            <td>Cartão de débito</td>
+            <td>Simulado (aprovado) em dev.</td>
+            <td><code>debito</code>, <code>cartao_debito</code></td>
+          </tr>
+          <tr>
+            <td><code>voucher</code></td>
+            <td>Vale / voucher</td>
+            <td>Não passa por gateway; registro apenas do valor.</td>
+            <td><code>vale</code></td>
+          </tr>
+          <tr>
+            <td><code>on_tab</code></td>
+            <td>Fiado / conta cliente</td>
+            <td><strong>Obrigatório</strong> informar <code>p03_custid</code> (cliente em <code>c01</code>). Sinônimo conceitual: venda “por conta”.</td>
+            <td><code>fiado</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note"><strong>PIX / cartões:</strong> somente esses tipos disparam <code>process_payment</code>. Dinheiro, voucher e fiado não passam pelo mock de adquirente.</p>
+
+    <h2 id="p01" class="anchor-target">p01 — Caixas (<code>P01</code>)</h2>
+    <p>Cadastro de pontos de venda físicos ou lógicos. Inclui <code>SysIdMixin</code>: coluna <code>sys_id</code> (UUID) para identificação interna; <strong>não expor em API pública</strong>.</p>
+    <div class="table-wrap">
+      <table class="col-dict">
+        <thead>
+          <tr>
+            <th>Coluna</th>
+            <th>Tipo (lógico)</th>
+            <th>Nulo</th>
+            <th>Função</th>
+            <th>Valores / conteúdo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>sys_id</code></td>
+            <td>UUID</td>
+            <td>Não</td>
+            <td>Chave interna estável (mixin).</td>
+            <td>Gerado pela aplicação; único indexado.</td>
+          </tr>
+          <tr>
+            <td><code>p01_id</code></td>
+            <td>inteiro</td>
+            <td>Não</td>
+            <td>Chave primária surrogate.</td>
+            <td>Auto / sequência.</td>
+          </tr>
+          <tr>
+            <td><code>p01_name</code></td>
+            <td>string(120)</td>
+            <td>Não</td>
+            <td>Nome ou rótulo do caixa (ex.: “Balcão 1”).</td>
+            <td>Único no banco; não vazio na criação via API.</td>
+          </tr>
+          <tr>
+            <td><code>p01_status</code></td>
+            <td>booleano</td>
+            <td>Não</td>
+            <td>Caixa ativo ou inativo (delete lógico no PDV0002).</td>
+            <td><code>true</code> = pode operar; <code>false</code> = inativo; abertura de sessão recusa se inativo.</td>
+          </tr>
+          <tr>
+            <td><code>p01_dtcreated</code></td>
+            <td>datetime</td>
+            <td>Não</td>
+            <td>Data/hora de cadastro.</td>
+            <td>UTC na prática do servidor (<code>func.now()</code> no default).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="p02" class="anchor-target">p02 — Sessões de caixa (<code>P02</code>)</h2>
+    <p>Uma sessão liga um operador a um caixa entre abertura e fechamento. <code>p02_status</code> controla o ciclo de vida.</p>
+    <div class="table-wrap">
+      <table class="col-dict">
+        <thead>
+          <tr>
+            <th>Coluna</th>
+            <th>Tipo (lógico)</th>
+            <th>Nulo</th>
+            <th>Função</th>
+            <th>Valores / conteúdo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>p02_id</code></td>
+            <td>inteiro</td>
+            <td>Não</td>
+            <td>PK da sessão.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p02_p01id</code></td>
+            <td>FK → <code>p01</code></td>
+            <td>Não</td>
+            <td>Caixa ao qual a sessão pertence.</td>
+            <td><code>RESTRICT</code> em delete do caixa.</td>
+          </tr>
+          <tr>
+            <td><code>p02_userid</code></td>
+            <td>inteiro</td>
+            <td>Sim</td>
+            <td>Usuário que abriu (ID do sistema de login, se disponível).</td>
+            <td>Sem FK declarada no modelo PDV.</td>
+          </tr>
+          <tr>
+            <td><code>p02_openedby</code></td>
+            <td>string(120)</td>
+            <td>Sim</td>
+            <td>Nome amigável de quem abriu (auditoria na tela).</td>
+            <td>Texto livre curto.</td>
+          </tr>
+          <tr>
+            <td><code>p02_opening</code></td>
+            <td>decimal(18,2)</td>
+            <td>Não</td>
+            <td>Fundo de troco / valor inicial contado na abertura.</td>
+            <td>≥ 0.</td>
+          </tr>
+          <tr>
+            <td><code>p02_openedat</code></td>
+            <td>datetime</td>
+            <td>Não</td>
+            <td>Instante da abertura.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p02_closing</code></td>
+            <td>decimal(18,2)</td>
+            <td>Sim</td>
+            <td>Valor contado na gaveta no fechamento.</td>
+            <td>Preenchido ao fechar.</td>
+          </tr>
+          <tr>
+            <td><code>p02_difference</code></td>
+            <td>decimal(18,2)</td>
+            <td>Sim</td>
+            <td>Diferença (sobra/falta) versus saldo esperado.</td>
+            <td>Calculado na rotina de fechamento.</td>
+          </tr>
+          <tr>
+            <td><code>p02_closedat</code></td>
+            <td>datetime</td>
+            <td>Sim</td>
+            <td>Quando a sessão foi fechada.</td>
+            <td><code>null</code> enquanto aberta.</td>
+          </tr>
+          <tr>
+            <td><code>p02_closeduserid</code></td>
+            <td>inteiro</td>
+            <td>Sim</td>
+            <td>Usuário que fechou.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p02_closedby</code></td>
+            <td>string(120)</td>
+            <td>Sim</td>
+            <td>Nome de quem fechou.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p02_totsales</code></td>
+            <td>decimal(18,2)</td>
+            <td>Sim</td>
+            <td>Total de vendas na sessão (agregado).</td>
+            <td>Atualizado no fechamento (ou resumo).</td>
+          </tr>
+          <tr>
+            <td><code>p02_totcash</code></td>
+            <td>decimal(18,2)</td>
+            <td>Sim</td>
+            <td>Soma dos pagamentos em dinheiro das vendas.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p02_totpix</code></td>
+            <td>decimal(18,2)</td>
+            <td>Sim</td>
+            <td>Soma PIX.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p02_totcredit</code></td>
+            <td>decimal(18,2)</td>
+            <td>Sim</td>
+            <td>Soma cartão crédito.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p02_totdebit</code></td>
+            <td>decimal(18,2)</td>
+            <td>Sim</td>
+            <td>Soma cartão débito.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p02_totvoucher</code></td>
+            <td>decimal(18,2)</td>
+            <td>Sim</td>
+            <td>Soma vouchers.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p02_totontab</code></td>
+            <td>decimal(18,2)</td>
+            <td>Sim</td>
+            <td>Soma fiado (<code>on_tab</code>).</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p02_totwithdraw</code></td>
+            <td>decimal(18,2)</td>
+            <td>Sim</td>
+            <td>Total de sangrias (<code>p06</code>) na sessão.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p02_status</code></td>
+            <td>string(10)</td>
+            <td>Não</td>
+            <td>Estado da sessão.</td>
+            <td><code>OPEN</code> = operando; <code>CLOSED</code> = encerrada. Filtro de histórico aceita esses literais.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="p03" class="anchor-target">p03 — Vendas (<code>P03</code>)</h2>
+    <p>Cabeçalho da venda; itens em <code>p04</code> e pagamentos em <code>p05</code>. Relacionamentos: <code>p01</code>, <code>p02</code>; cliente opcional <code>c01</code>.</p>
+    <div class="table-wrap">
+      <table class="col-dict">
+        <thead>
+          <tr>
+            <th>Coluna</th>
+            <th>Tipo (lógico)</th>
+            <th>Nulo</th>
+            <th>Função</th>
+            <th>Valores / conteúdo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>p03_id</code></td>
+            <td>inteiro</td>
+            <td>Não</td>
+            <td>PK da venda.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p03_p01id</code></td>
+            <td>FK → <code>p01</code></td>
+            <td>Não</td>
+            <td>Caixa da venda.</td>
+            <td><code>RESTRICT</code>.</td>
+          </tr>
+          <tr>
+            <td><code>p03_p02id</code></td>
+            <td>FK → <code>p02</code></td>
+            <td>Não</td>
+            <td>Sessão em que a venda ocorreu.</td>
+            <td><code>RESTRICT</code>; sessão deve estar <code>OPEN</code> na gravação.</td>
+          </tr>
+          <tr>
+            <td><code>p03_userid</code></td>
+            <td>inteiro</td>
+            <td>Sim</td>
+            <td>Operador que registrou a venda.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p03_custid</code></td>
+            <td>FK → <code>c01</code></td>
+            <td>Sim</td>
+            <td>Cliente para fiado ou vínculo fiscal/comercial.</td>
+            <td><code>SET NULL</code> se cliente removido. <strong>Obrigatório</strong> se algum pagamento for <code>on_tab</code>.</td>
+          </tr>
+          <tr>
+            <td><code>p03_custname</code></td>
+            <td>string(200)</td>
+            <td>Sim</td>
+            <td>Snapshot do nome do cliente no momento da venda.</td>
+            <td>Útil para cupom/relatório se <code>c01</code> mudar depois.</td>
+          </tr>
+          <tr>
+            <td><code>p03_total</code></td>
+            <td>decimal(18,2)</td>
+            <td>Não</td>
+            <td>Valor total da venda.</td>
+            <td>≥ 0; deve ser coerente com itens + descontos conforme regra da API.</td>
+          </tr>
+          <tr>
+            <td><code>p03_change</code></td>
+            <td>decimal(18,2)</td>
+            <td>Não</td>
+            <td>Troco devolvido ao cliente.</td>
+            <td>≥ 0; default 0.</td>
+          </tr>
+          <tr>
+            <td><code>p03_dtcreated</code></td>
+            <td>datetime</td>
+            <td>Não</td>
+            <td>Data/hora da venda.</td>
+            <td>Indexado; usado em listagens.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="p04" class="anchor-target">p04 — Itens de venda (<code>P04</code>)</h2>
+    <p>Cada linha é um produto vendido. Quantidade com três decimais (ex.: kg); preço unitário com quatro decimais; subtotal em moeda (2 decimais).</p>
+    <div class="table-wrap">
+      <table class="col-dict">
+        <thead>
+          <tr>
+            <th>Coluna</th>
+            <th>Tipo (lógico)</th>
+            <th>Nulo</th>
+            <th>Função</th>
+            <th>Valores / conteúdo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>p04_id</code></td>
+            <td>inteiro</td>
+            <td>Não</td>
+            <td>PK do item.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p04_p03id</code></td>
+            <td>FK → <code>p03</code></td>
+            <td>Não</td>
+            <td>Venda pai.</td>
+            <td><code>CASCADE</code> ao excluir venda.</td>
+          </tr>
+          <tr>
+            <td><code>p04_prdid</code></td>
+            <td>FK → <code>e01</code></td>
+            <td>Não</td>
+            <td>Produto (cadastro de estoque).</td>
+            <td><code>RESTRICT</code>: não apagar produto com venda ligada.</td>
+          </tr>
+          <tr>
+            <td><code>p04_qtde</code></td>
+            <td>decimal(18,3)</td>
+            <td>Não</td>
+            <td>Quantidade vendida.</td>
+            <td>&gt; 0 na API.</td>
+          </tr>
+          <tr>
+            <td><code>p04_unitprice</code></td>
+            <td>decimal(18,4)</td>
+            <td>Não</td>
+            <td>Preço unitário praticado no PDV.</td>
+            <td>≥ 0.</td>
+          </tr>
+          <tr>
+            <td><code>p04_subtotal</code></td>
+            <td>decimal(18,2)</td>
+            <td>Não</td>
+            <td>Linha total (normalmente qtde × unit, arredondado).</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="p05" class="anchor-target">p05 — Pagamentos da venda (<code>P05</code>)</h2>
+    <p>Uma venda pode ter várias linhas de pagamento (troco e split). Tipos válidos: ver seção <a href="#pagamentos">Formas de pagamento</a>.</p>
+    <div class="table-wrap">
+      <table class="col-dict">
+        <thead>
+          <tr>
+            <th>Coluna</th>
+            <th>Tipo (lógico)</th>
+            <th>Nulo</th>
+            <th>Função</th>
+            <th>Valores / conteúdo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>p05_id</code></td>
+            <td>inteiro</td>
+            <td>Não</td>
+            <td>PK.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p05_p03id</code></td>
+            <td>FK → <code>p03</code></td>
+            <td>Não</td>
+            <td>Venda.</td>
+            <td><code>CASCADE</code>.</td>
+          </tr>
+          <tr>
+            <td><code>p05_type</code></td>
+            <td>string(20)</td>
+            <td>Não</td>
+            <td>Meio de pagamento.</td>
+            <td>Um dos valores normalizados: <code>cash</code>, <code>pix</code>, <code>credit_card</code>, <code>debit_card</code>, <code>voucher</code>, <code>on_tab</code>.</td>
+          </tr>
+          <tr>
+            <td><code>p05_amount</code></td>
+            <td>decimal(18,2)</td>
+            <td>Não</td>
+            <td>Valor pago nesta linha.</td>
+            <td>&gt; 0 na API.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="p06" class="anchor-target">p06 — Sangrias (<code>P06</code>)</h2>
+    <p>Retirada de numerário da gaveta durante sessão aberta; reduz o saldo esperado no fechamento.</p>
+    <div class="table-wrap">
+      <table class="col-dict">
+        <thead>
+          <tr>
+            <th>Coluna</th>
+            <th>Tipo (lógico)</th>
+            <th>Nulo</th>
+            <th>Função</th>
+            <th>Valores / conteúdo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>p06_id</code></td>
+            <td>inteiro</td>
+            <td>Não</td>
+            <td>PK.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p06_p02id</code></td>
+            <td>FK → <code>p02</code></td>
+            <td>Não</td>
+            <td>Sessão em que ocorreu a sangria.</td>
+            <td><code>RESTRICT</code>.</td>
+          </tr>
+          <tr>
+            <td><code>p06_userid</code></td>
+            <td>inteiro</td>
+            <td>Sim</td>
+            <td>Usuário que registrou.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p06_performedby</code></td>
+            <td>string(120)</td>
+            <td>Sim</td>
+            <td>Nome exibido para auditoria.</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>p06_amount</code></td>
+            <td>decimal(18,2)</td>
+            <td>Não</td>
+            <td>Valor retirado.</td>
+            <td>&gt; 0 na API.</td>
+          </tr>
+          <tr>
+            <td><code>p06_reason</code></td>
+            <td>string(255)</td>
+            <td>Sim</td>
+            <td>Motivo / observação.</td>
+            <td>Texto livre.</td>
+          </tr>
+          <tr>
+            <td><code>p06_dtcreated</code></td>
+            <td>datetime</td>
+            <td>Não</td>
+            <td>Registro da operação.</td>
+            <td>Indexado.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="externas" class="anchor-target">Tabelas externas ao módulo PDV (uso na rotina)</h2>
+    <p>O PDV não define essas tabelas, mas <strong>depende</strong> delas para venda com estoque e cliente.</p>
+    <h3>c01 — Clientes (<code>come</code>)</h3>
+    <p><code>p03_custid</code> aponta para <code>c01.c01_id</code>. Campos usados conceitualmente no PDV: identificador, nome/razão, documento (CPF/CNPJ), cadastro ativo. Ver modelo completo em <span class="path">API/app/modules/come/models.py</span>.</p>
+    <h3>e01 — Produtos (<code>esto</code>)</h3>
+    <p><code>p04_prdid</code> → <code>e01.e01_id</code>. No cadastro: código, descrição, EAN, unidade, preço de venda, flags de ativo, etc. Ver <span class="path">API/app/modules/esto/models.py</span>.</p>
+    <h3>e06 — Tipos de estoque (TES) e movimentação</h3>
+    <p>Com <code>enforce_stock=true</code> no POST de venda, o serviço busca um TES ativo com <code>e06_fin == "VENDA"</code> e natureza de saída, e gera movimento de estoque (rotina <code>esto0002</code>). Se não existir TES configurado, a API retorna erro orientando o cadastro.</p>
+
+    <h2 id="contrato" class="anchor-target">Contrato API / front</h2>
+    <div class="note">
+      <strong>Alinhamento:</strong> o backend usa campos com prefixo de tabela (<code>p01_id</code>, <code>p02_p01id</code>, etc.). O cliente em <code>app/src/services/api.jsx</code> pode ainda enviar campos legados em alguns fluxos (<code>cash_register_id</code>, <code>id</code> no caixa). Evoluções devem alinhar o front aos schemas Pydantic.
+    </div>
+    <p>Após alterar colunas ou enums (ex.: novo <code>p05_type</code>), atualize: <code>schemas.py</code>, validação em <code>services.py</code>, front (pagamentos) e esta documentação.</p>
+
+    <h2 id="arquivos">Mapa de arquivos</h2>
+    <pre><code>app/src/pages/pdv/
+├── pdv0001/PDV0001Page.jsx, pdv0001.css
+└── pdv0002/PDV0002Page.jsx, pdv0002.css
+
+API/app/modules/pdv/
+├── models.py, router.py
+└── routines/
+    ├── pdv0001/ routes.py, services.py, schemas.py, payment_service.py
+    └── pdv0002/ routes.py, services.py, schemas.py
+
+app/src/services/api.jsx
+sindocs/pdv/  (pdv.html, pdv0001.html, pdv0002.html, pdv-dados.html, pdv.css)</code></pre>
+
+    <aside class="doc-extend" aria-label="Extensões úteis">
+      <h3>O que mais documentar depois</h3>
+      <ul style="margin: 0.5rem 0 0;">
+        <li><strong>Diagrama ER</strong> (p01→p02→p03→p04/p05, p06→p02) em ferramenta externa ou Mermaid no wiki.</li>
+        <li><strong>Regras de concorrência</strong>: apenas uma sessão <code>OPEN</code> por <code>p01</code>.</li>
+        <li><strong>Relatórios</strong>: exemplos de SQL ou views para conferência diária (vendas × pagamentos × sangrias).</li>
+        <li><strong>Integração real de pagamento</strong>: substituir <code>payment_service.py</code> e documentar códigos de retorno do adquirente.</li>
+      </ul>
+    </aside>
+  </div>
+</body>
+</html>

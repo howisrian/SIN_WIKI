@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ESTO0003 — TES (SIN ERP)</title>
+  <link rel="stylesheet" href="esto.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="esto.html">← Módulo ESTO</a>
+    <h1><span class="tag esto3">esto0003</span> Tipos de estoque (TES)</h1>
+    <p class="lead">Cadastro de <code>e06</code>: natureza (entrada/saída), finalidade (ex. VENDA), movimenta estoque, ativo.</p>
+    <p class="meta">Prefixo: <code>/esto/esto0003</code> · Front: <code>tes</code> · <span class="path">app/src/pages/esto/esto0003/TesPage.jsx</span></p>
+
+    <nav class="doc-toc" aria-label="Índice">
+      <ol>
+        <li><a href="#api">API</a></li>
+        <li><a href="#rel">Ver também</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="api">API</h2>
+    <table>
+      <thead><tr><th>Método</th><th>Endpoint</th><th>Descrição</th></tr></thead>
+      <tbody>
+        <tr><td>GET</td><td><code>/esto/esto0003/tes</code></td><td>Lista TES.</td></tr>
+        <tr><td>GET</td><td><code>/esto/esto0003/tes/{tes_id}</code></td><td>Detalhe.</td></tr>
+        <tr><td>POST</td><td><code>/esto/esto0003/tes</code></td><td>Cria.</td></tr>
+        <tr><td>PUT</td><td><code>/esto/esto0003/tes/{tes_id}</code></td><td>Atualiza.</td></tr>
+      </tbody>
+    </table>
+    <p>Arquivos: <span class="path">API/app/modules/esto/routines/esto0003/</span></p>
+    <div class="note">O PDV usa um TES ativo com finalidade de venda e saída para <code>enforce_stock</code> — ver documentação PDV.</div>
+
+    <h2 id="rel">Ver também</h2>
+    <ul>
+      <li><a href="esto-dados.html">Tabela e06</a></li>
+      <li><a href="../pdv/pdv-dados.html">PDV — estoque</a></li>
+    </ul>
+  </div>
+</body>
+</html>

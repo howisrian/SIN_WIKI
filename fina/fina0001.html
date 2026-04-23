@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FINA0001 — Cadastros (SIN ERP)</title>
+  <link rel="stylesheet" href="fina.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="fina.html">← Módulo FINA</a>
+    <h1><span class="tag fina1">fina0001</span> Cadastros financeiros</h1>
+    <p class="lead">Contas financeiras, bancos e categorias de lançamento.</p>
+    <p class="meta">Prefixo: <code>/fina/fina0001</code> · Front: <code>accounts</code>, <code>banks</code>, <code>finCategories</code> · <span class="path">app/src/pages/fina/fina0001/</span></p>
+
+    <nav class="doc-toc" aria-label="Índice">
+      <ol>
+        <li><a href="#api">API</a></li>
+        <li><a href="#rel">Ver também</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="api">API</h2>
+    <table>
+      <thead><tr><th>Método</th><th>Endpoint</th><th>Descrição</th></tr></thead>
+      <tbody>
+        <tr><td>POST</td><td><code>/fina/fina0001/accounts</code></td><td>Cria conta <code>f01</code>.</td></tr>
+        <tr><td>GET</td><td><code>/fina/fina0001/accounts</code></td><td>Lista contas.</td></tr>
+        <tr><td>POST</td><td><code>/fina/fina0001/banks</code></td><td>Cria banco <code>f02</code>.</td></tr>
+        <tr><td>GET</td><td><code>/fina/fina0001/banks</code></td><td>Lista bancos.</td></tr>
+        <tr><td>POST</td><td><code>/fina/fina0001/categories</code></td><td>Cria categoria <code>f03</code>.</td></tr>
+        <tr><td>GET</td><td><code>/fina/fina0001/categories</code></td><td>Lista categorias.</td></tr>
+      </tbody>
+    </table>
+    <p>Arquivos: <span class="path">API/app/modules/fina/routines/fina0001/</span></p>
+
+    <h2 id="rel">Ver também</h2>
+    <ul>
+      <li><a href="fina-dados.html">Tabelas f01–f03</a></li>
+      <li><a href="fina0002.html">FINA0002 — Caixa</a></li>
+    </ul>
+  </div>
+</body>
+</html>

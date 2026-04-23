@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FINA — Dados (SIN ERP)</title>
+  <link rel="stylesheet" href="fina.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="doc-back" href="fina.html">← Módulo FINA</a>
+    <h1>Tabelas e rotinas — FINA</h1>
+    <p class="lead">Resumo das entidades <code>f01</code>…<code>f05</code>. Detalhe de colunas: <span class="path">API/app/modules/fina/models.py</span>.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tabela</th><th>Uso</th><th>Rotinas</th></tr></thead>
+        <tbody>
+          <tr><td><code>f01</code></td><td>Conta financeira (tipo, moeda, saldo abertura).</td><td>fina0001, fina0002 (FK em f04), fina0003</td></tr>
+          <tr><td><code>f02</code></td><td>Banco (código FEBRABAN-like, nome).</td><td>fina0001</td></tr>
+          <tr><td><code>f03</code></td><td>Categoria (tipo E/S/A).</td><td>fina0001, f04 opcional</td></tr>
+          <tr><td><code>f04</code></td><td>Lançamento: conta, tipo E/S, valor, data, categoria, status.</td><td>fina0002</td></tr>
+          <tr><td><code>f05</code></td><td>Agenda: tipo schedule (ex. PAY), valor, data, conta, status, ref. transação.</td><td>fina0003</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Mapa de arquivos</h2>
+    <pre><code>API/app/modules/fina/
+├── models.py, router.py
+└── routines/fina0001|fina0002|fina0003/
+
+app/src/pages/fina/
+├── fina0001/ AccountsPage, BanksPage, FinCategoriesPage
+├── fina0002/ TransactionsPage, BalancePage
+└── fina0003/ FINA0003Page.jsx</code></pre>
+  </div>
+</body>
+</html>
